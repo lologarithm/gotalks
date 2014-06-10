@@ -1,0 +1,270 @@
+What Is Go And Why Should I Care?
+Big Sky Dev Con
+
+June 2014
+
+Ben Echols
+Dev Lead, Webfilings
+ben.p.echols@gmail.com
+
+* About me
+
+.html strike.html
+
+I currently work for Webfilings writing server side document translation software in Python and Go.
+
+I have worked on a huge variety of server tech stacks at MSNBC, Microsoft,  Nokia, Microsoft Game Studios, RightNow/Oracle, and Webfilings.
+
+I really like to write game servers in my spare time.
+
+* What is Go and Why Should I Care?
+
+** What is Go?
+
+.image images/gophermega.jpg 413 500
+
+Warning: This talk will not teach you Go.
+
+* What is Go
+
+** Hello World
+
+.play examples/hello.go
+
+* What makes Go different?
+
+Go is simple.
+
+Go does not have inheritance, generics, or polymorphism.
+
+Go does not treat error conditions as 'exceptional'.
+
+Go does not have threading classes and communication between goroutines is very simple.
+
+Go has great built in tools.
+
+Go can be cross compiled for any OS from your machine.
+
+.image images/google-gopher.png
+
+* What makes Go different?
+
+_Go_compiles_everything_to_a_single_binary_with_no_depedencies._
+
+* What is Go
+** Language Features
+
+* Objects and Interfaces
+
+Go 'objects' are simply structs that can have methods defined on them.
+
+Go does not have any kind of inheritance or traditional interfaces. When you create an interface a struct does not 'implement' but instead 'satisfies'
+
+* Interface Example
+
+Interfaces are usually named following the pattern X-er because an interface describes what a struct is capable of doing.
+
+.code examples/interfaces.go /FIRST OMIT/,/ENDFIRST OMIT/
+
+* Interface Example
+
+.play examples/interfaces.go /^func main/,/ENDSECOND OMIT/
+
+* Error Handling
+
+In Go you either have an error or an exception. 
+
+In most languages attempting to open a socket to an IP that did not accept the connection would throw an exception. 
+
+In Go exceptions are reserved for 'exceptional' events. Being unable to connect to a server is an error state that should be resolved as an error and not an 'exceptional' event.
+
+.image images/errors.png 400 533
+
+* Error Example
+
+.play examples/socketErr.go /^func main/,/END MAIN/
+
+* Concurrency
+
+To launch a function without blocking on it you use the keyword 'go' which launches a goroutine.
+
+.play examples/goroutines.go
+
+* Channels
+
+To communicate and synchronize between goroutines you use channels.
+
+Channels are typed and can be buffered: Use make(chan int, X) where X is how many elements can buffer.
+
+When a channel buffer is full it blocks on send and if it is empty it blocks on receive.
+
+.play examples/goroutines2.go
+
+* Tools
+
+gofmt - Automatically formats code
+
+go get - Fetch a remote project
+
+go test - Run unit tests
+
+go vet - Looks for common runtime errors
+
+go tools pprof - Profile your code
+
+.image images/tools.jpg 300 400
+
+* Other Things That Make Go Awesome
+
+Compile time race condition checker.
+
+Will crash if all goroutines are sleeping.
+
+Compile time is almost instant and runs very fast. This makes debugging issues very easy!
+
+go test -cover gives branch coverage and adds about 3% overhead to running tests
+
+go test -bench will run benchmark tests and return results
+
+Unused imports and variables are a compile error.
+
+.html awesome.html
+
+* Testing in Go
+
+* Testing framework
+
+Demo time!
+
+Few small examples from a project I am working on.
+
+* Why Should You Care?
+
+* Go and Appengine
+
+Demo of the application I am developing
+
+* What is Go Being Used For?
+
+Some examples from Brad Fitzpatrick
+
+.link http://talks.golang.org/2014/gocon-tokyo.slide#32
+
+* Web frameworks & Crypto
+
+- Typically a job for scripting languages: Node.js, Python, Ruby, Perl, PHP, etc.
+- net/http in the standard library
+- Other http frameworks on top: gorilla, martini, Revel etc...
+- No need for nginx: standard library's http server scales
+- no OpenSSL, no GnuTLS
+- pure Go AES, TLS (SSL), OpenPGP, etc
+- slower, but safer
+- getting faster
+
+* Replacing shell scripts
+
+- os/exec package & goroutines makes subprocess management easier than shell
+
+* Controlling flying drones
+
+.link http://www.godrone.io
+- "Isn’t Go unsuitable for real-time applications like this?"
+- "However, for all practical purposes the GC just needs to keep up with the stabilization loop which runs at 200 Hz. This means that GC pauses below 5ms have no impact on performance. Longer pauses will degrade stabilization performance, but the tolerance threshold may be up to a second ..." (small heap)
+
+.image gocon-tokyo/drone.png
+
+* Emulators
+
+.link http://dave.cheney.net/2013/01/09/go-the-language-for-emulators Go: The Language For Emulators
+
+.image gocon-tokyo/trs.png
+
+* Disassembler, linker, compiler.
+
+- llgo compiler (Go -> LLVM IR -> ...)
+- Go 1.3's disassembler
+- Go 1.4's linker
+- Go 1.4 or Go 1.5's compiler
+
+* Mobile
+
+- Go runs on ARM
+- minux's iOS port of Go
+- Camlistore child process, goandroid
+
+.image gocon-tokyo/goandroid.png
+
+* Audio synthesis
+
+- https://github.com/nf/sigourney
+
+.image gocon-tokyo/sigourney.png
+
+* Cloud infrastructure
+
+.link http://redmonk.com/dberkholz/2014/03/18/go-the-emerging-language-of-cloud-infrastructure/ Go: the emerging language of cloud infrastructure
+
+- Docker, Packer
+- CoreOS’s etcd and fleet
+- Ubuntu Juju, Mozilla Heka, Apcera’s NATS, gnatsd
+
+.image gocon-tokyo/docker.png
+
+* Load balancers & servers
+
+- YouTube's vitess: MySQL
+- net/http/httputil.ReverseProxy
+- dl.google.com
+- etc
+
+* Raspberry Pi GPIO
+
+.link https://github.com/davecheney/gpio
+.link https://github.com/stianeikeland/go-rpio
+.link https://github.com/luismesas/goPi
+
+.image gocon-tokyo/gpio.gif
+
+* Javascript compilers
+
+.link https://github.com/gopherjs/gopherjs
+
+* Presentations
+
+This presentation is running on a Go http server!
+
+* Webfilings Python On Appengine
+
+We currently run server side processes in python that need parallel fetching and parsing of documents.
+
+Python in appengine is not allowed to use threads and so we run many simultaneous python tasks that communicate via datastore. 
+
+On a very large document we will be running several hundred instances fetching, parsing, and storing sections of a document.
+
+* Webfilings Go Rewrite
+
+In Go we rewrote that parallel code into simple goroutines and channels. The code we rewrote from python to Go ran about 2x faster than python. 
+
+The big win was that we used one appengine instance instead of hundreds!
+
+Total cost reduction due to CPU time was about 1000x
+
+* Task Management
+
+We are currently rewriting our service from running on appengine to run on EC2 or GCE. 
+
+One component of our TaskManager is rest endpoints which were complicated in Java but much simpler in Go.
+
+The endpoint code into Go is about 1/4 the amount of code in the Java version!
+
+* REST Example
+
+.code examples/rest.go /BEGIN EXAMPLE/,/END EXAMPLE/
+
+* The End
+
+.image images/allfolks.jpg 500 800
+
+Go is a simple but flexible language that is worth learning.
+
+* Questions?
